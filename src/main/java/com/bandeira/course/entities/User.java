@@ -1,12 +1,18 @@
 package com.bandeira.course.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+
 @Entity
 @Table(name = "tb_user")
 public class User implements Serializable {
+    @JsonIgnore
+    @OneToMany(mappedBy = "client")
+    private final List <Order> orders = new ArrayList <>();
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -66,6 +72,11 @@ public class User implements Serializable {
         this.password = password;
     }
 
+    public List <Order> getOrders() {
+        return orders;
+    }
+
+
     @Override
     public boolean equals( Object o ) {
         if (this == o) return true;
@@ -78,6 +89,5 @@ public class User implements Serializable {
     public int hashCode() {
         return Objects.hashCode(getId());
     }
-
 
 }

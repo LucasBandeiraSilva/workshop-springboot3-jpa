@@ -8,8 +8,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "tb_order_item")
@@ -35,6 +33,7 @@ public class OrderItem implements Serializable {
     public void setOrder(Order order){
         id.setOrder(order);
     }
+
     public Product getProduct(){
         return id.getProduct();
     }

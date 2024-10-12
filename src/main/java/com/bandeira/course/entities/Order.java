@@ -28,11 +28,11 @@ public class Order implements Serializable {
     public Order() {
     }
 
-    public Order( Long id, Instant instant, OrderStatus orderStatus, User client ) {
+    public Order( Long id, Instant instant, User client,OrderStatus orderStatus ) {
         this.id = id;
         this.instant = instant;
-        setOrderStatus(orderStatus);
         this.client = client;
+        setOrderStatus(orderStatus);
     }
 
     public Long getId() {
@@ -51,6 +51,14 @@ public class Order implements Serializable {
         this.instant = instant;
     }
 
+    public User getClient() {
+        return client;
+    }
+
+    public void setClient( User client ) {
+        this.client = client;
+    }
+
     public OrderStatus getOrderStatus() {
         return OrderStatus.valueOf(orderStatus);
     }
@@ -60,24 +68,20 @@ public class Order implements Serializable {
 
     }
 
-    public User getClient() {
-        return client;
-    }
-
-    public void setClient( User client ) {
-        this.client = client;
-    }
-
-    public Set <OrderItem> getItems() {
-        return items;
-    }
-
     public Payment getPayment() {
         return payment;
     }
 
     public void setPayment( Payment payment ) {
         this.payment = payment;
+    }
+
+    public Set <OrderItem> getItems() {
+        return items;
+    }
+
+    public Double getTotal(){
+        return items.stream().map(OrderItem::getSubTotal).reduce(.0,Double::sum);
     }
 
     @Override

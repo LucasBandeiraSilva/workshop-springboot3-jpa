@@ -24,7 +24,7 @@ public class UserResources {
 
     @GetMapping(value = "/{id}")
     public ResponseEntity <User> findById( @PathVariable Long id ) {
-        return ResponseEntity.ok().body(userService.findById(id));
+        return ResponseEntity.ok(userService.findById(id));
     }
 
     @PostMapping
@@ -37,5 +37,9 @@ public class UserResources {
     public ResponseEntity<Void> deleteUserById(@PathVariable Long id){
         userService.deleteUserById(id);
         return ResponseEntity.noContent().build();
+    }
+    @PutMapping(value ="/{id}")
+    public ResponseEntity<User>updateUser(@PathVariable Long id, @RequestBody User user){
+        return ResponseEntity.ok(userService.updateUser(id,user));
     }
 }

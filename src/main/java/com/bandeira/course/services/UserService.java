@@ -2,6 +2,7 @@ package com.bandeira.course.services;
 
 import com.bandeira.course.entities.User;
 import com.bandeira.course.repositories.UserRepository;
+import com.bandeira.course.services.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,7 @@ public class UserService {
     public User findById( Long id ) {
 
         Optional <User> optional = userRepository.findById(id);
-         return optional.get();
+         return optional.orElseThrow(()-> new ResourceNotFoundException(id));
 
     }
     public User insertUser(User user){

@@ -4,6 +4,7 @@ import com.bandeira.course.entities.User;
 import com.bandeira.course.repositories.UserRepository;
 import com.bandeira.course.services.exceptions.DatabaseException;
 import com.bandeira.course.services.exceptions.ResourceNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -24,10 +25,11 @@ public class UserService {
     public User findById( Long id ) {
 
         Optional <User> optional = userRepository.findById(id);
-         return optional.orElseThrow(()-> new ResourceNotFoundException(id));
+        return optional.orElseThrow(() -> new ResourceNotFoundException(id));
 
     }
-    public User insertUser(User user){
+
+    public User insertUser( User user ) {
         return userRepository.save(user);
     }
 
@@ -40,10 +42,16 @@ public class UserService {
         }
     }
 
-    public User updateUser(Long id, User user){
-        User entity = userRepository.getReferenceById(id);
-        updateData(entity,user);
-        return userRepository.save(entity);
+    public User updateUser( Long id, User user ) {
+        try {
+            User entity = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
+            updateData(entity, user);
+            return userRepository.save(entity);
+        } catch (EntityNotFoundException e) {
+            throw new ResourceNotFoundException(id);
+        } catch (DataIntegrityViolationException e) {
+            throw new DatabaseException(e.getMessage());
+        }
     }
 
     private void updateData( User entity, User user ) {

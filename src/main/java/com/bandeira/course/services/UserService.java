@@ -2,8 +2,11 @@ package com.bandeira.course.services;
 
 import com.bandeira.course.entities.User;
 import com.bandeira.course.repositories.UserRepository;
+import com.bandeira.course.services.exceptions.DatabaseException;
 import com.bandeira.course.services.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,9 +30,16 @@ public class UserService {
     public User insertUser(User user){
         return userRepository.save(user);
     }
-    public void deleteUserById(Long id){
-        userRepository.deleteById(id);
+
+    public void deleteUserById( Long id ) {
+        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
+        try {
+            userRepository.delete(user);
+        } catch (DataIntegrityViolationException e) {
+            throw new DatabaseException(e.getMessage());
+        }
     }
+
     public User updateUser(Long id, User user){
         User entity = userRepository.getReferenceById(id);
         updateData(entity,user);
